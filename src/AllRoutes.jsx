@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/home/Home";
 import Sorting from "./components/sorting/Sorting";
@@ -8,9 +8,11 @@ import EquationSolve from "./components/EquationSolve/EquationSolve";
 import NQueen from "./components/N-Queens-Problem/NQueens";
 import Minesweeper from "./components/Minesweeper/Minesweeper";
 import Game2048 from "./components/Game2048/Game2048";
+import Landing from "./components/landing/Landing";
 
 const routes = [
-  { path: "/", Component: Home },
+  { path: "/", Component: Landing },
+  { path: "/home", Component: Home },
   { path: "/sorting/:page", Component: Sorting },
   { path: "/graph/:page", Component: Graph },
   { path: "/tree/:page", Component: Tree },

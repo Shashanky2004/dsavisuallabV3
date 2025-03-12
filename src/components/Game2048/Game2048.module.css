@@ -1,55 +1,140 @@
 .container {
   min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .heading {
-  padding: 0;
-  margin: 0;
-  font-size: 3rem;
+  font-size: 3.5rem;
+  font-weight: bold;
   text-align: center;
-  color: white;
-  padding-top: 1rem;
-  width: -webkit-fill-available;
+  color: transparent;
+  background: linear-gradient(45deg, #00b4d8, #90e0ef);
+  background-clip: text;
+  -webkit-background-clip: text;
+  margin-bottom: 2rem;
+  animation: gradientFlow 3s ease infinite;
 }
+
 .button {
   display: flex;
   gap: 2rem;
   justify-content: center;
-  padding-top: 1rem;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  padding-top: 2rem;
+  margin-bottom: 2rem;
 }
+
 .grid {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  margin: 2rem 0rem 1rem 0rem;
 }
+
 .row {
-  padding: 0;
-  margin: 0;
   display: flex;
+  gap: 2px;
 }
+
 .score {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #90e0ef;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.instructions {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.instructions h3 {
+  color: #90e0ef;
+  margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: white;
+}
+
+.instructions p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.instructions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.instructions li {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.instructions li:before {
+  content: "•";
+  color: #90e0ef;
+  margin-right: 0.5rem;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @media screen and (max-width: 800px) {
+  .container {
+    padding: 1rem;
+  }
+  
   .heading {
-    font-size: 2rem;
+    font-size: 2.5rem;
+  }
+  
+  .grid {
+    padding: 1rem;
+  }
+  
+  .score {
+    font-size: 1.5rem;
+  }
+  
+  .instructions {
+    padding: 1rem;
   }
 }
 
 @media screen and (max-width: 600px) {
   .heading {
-    font-size: 1.5rem;
+    font-size: 2rem;
+  }
+  
+  .score {
+    font-size: 1.25rem;
+  }
+  
+  .instructions {
+    font-size: 0.9rem;
   }
 }
 
 @media screen and (max-width: 300px) {
   .heading {
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
 }

@@ -13,7 +13,7 @@ const DepthFirstSearch = () => {
   const START_NODE_ROW = 1;
   const FINISH_NODE_ROW = 13;
   const FINISH_NODE_COL = 28;
-  const ANIMATION_SPEED = 1;
+  const ANIMATION_SPEED = 50; // Increased for better visualization
   const graphtype = "dfs";
   var TOTAL_ROW = 15;
   var TOTAL_COL = 45;
@@ -28,8 +28,8 @@ const DepthFirstSearch = () => {
 
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
-  const arraybarRef = useRef(null);
-  const [button, setButton] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const answerRef = useRef(null);
 
   // Step 1
   const createNode = (col, row) => {
@@ -40,20 +40,28 @@ const DepthFirstSearch = () => {
       isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
       distance: Infinity,
       isVisited: false,
-      isWall: true,
+      isWall: false, // Fixed: Default to false
       previousNode: null,
     };
   };
 
   const refileGrid = () => {
-    setButton(false);
-    arraybarRef.current.innerHTML = "";
-    document.getElementById(
-      `node-${START_NODE_ROW}-${START_NODE_COL}-${graphtype}`
-    ).className = "node node-start";
-    document.getElementById(
-      `node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}-${graphtype}`
-    ).className = "node node-finish";
+    setIsAnimating(false);
+    answerRef.current.innerHTML = "";
+    for (let row = 0; row < TOTAL_ROW; row++) {
+      for (let col = 0; col < TOTAL_COL; col++) {
+        if (row === START_NODE_ROW && col === START_NODE_COL) {
+          document.getElementById(`node-${row}-${col}-${graphtype}`).className =
+            "node node-start";
+        } else if (row === FINISH_NODE_ROW && col === FINISH_NODE_COL) {
+          document.getElementById(`node-${row}-${col}-${graphtype}`).className =
+            "node node-finish";
+        } else {
+          document.getElementById(`node-${row}-${col}-${graphtype}`).className =
+            "node";
+        }
+      }
+    }
   };
 
   const getInitialGrid = () => {
@@ -76,6 +84,7 @@ const DepthFirstSearch = () => {
   const getNewGridWithWallToggled = (grid, row, col) => {
     const newGrid = grid.slice();
     const node = newGrid[row][col];
+    if (node.isStart || node.isFinish) return grid;
     const newNode = {
       ...node,
       isWall: !node.isWall,
@@ -85,13 +94,14 @@ const DepthFirstSearch = () => {
   };
 
   const handleMouseDown = (row, col) => {
+    if (isAnimating) return;
     const newGrid = getNewGridWithWallToggled(grid, row, col);
     setGrid(newGrid);
     setMouseIsPressed(true);
   };
 
   const handleMouseEnter = (row, col) => {
-    if (!mouseIsPressed) return;
+    if (!mouseIsPressed || isAnimating) return;
     const newGrid = getNewGridWithWallToggled(grid, row, col);
     setGrid(newGrid);
   };
@@ -125,28 +135,27 @@ const DepthFirstSearch = () => {
         document.getElementById(
           `node-${node.row}-${node.col}-${graphtype}`
         ).className = "node node-shortest-path";
-      }, ANIMATION_SPEED * 2 * i);
+      }, ANIMATION_SPEED * i);
     }
     var length = nodesInShortestPathOrder.length - 1;
     setTimeout(() => {
-      if (length <= 0) arraybarRef.current.innerHTML = "Path not Possible! ";
-      else arraybarRef.current.innerHTML = "Minimun Distance : " + length;
-    }, ANIMATION_SPEED * 2 * length);
+      if (length <= 0) answerRef.current.innerHTML = "Path not possible! 😕";
+      else answerRef.current.innerHTML = `Path found with length: ${length} steps ✨`;
+      setIsAnimating(false);
+    }, ANIMATION_SPEED * length);
   };
 
   const visualizeDfs = () => {
-    setButton(true);
-    if (
-      START_NODE_ROW == FINISH_NODE_ROW &&
-      START_NODE_COL == FINISH_NODE_COL
-    ) {
-      arraybarRef.current.innerHTML = "Start and Finish are in same point!";
+    if (isAnimating) return;
+    setIsAnimating(true);
+    
+    if (START_NODE_ROW === FINISH_NODE_ROW && START_NODE_COL === FINISH_NODE_COL) {
+      answerRef.current.innerHTML = "Start and Finish are at the same point! 🤔";
+      setIsAnimating(false);
       return;
     }
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    startNode.isWall = false;
-    finishNode.isWall = false;
     const visitedNodesInOrder = depthfirstsearch(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     animateDfs(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -156,6 +165,30 @@ const DepthFirstSearch = () => {
     <div className={classes.container}>
       <BackButton />
       <div className={classes.heading}>Depth First Search</div>
+      
+      <div className={classes.instructions}>
+        Click and drag to create walls. DFS will find a path from the green start node to the red target node, exploring deeply into each branch before backtracking.
+      </div>
+
+      <div className={classes.legend}>
+        <div className={classes.legendItem}>
+          <div className={`${classes.legendColor} ${classes.legendStart}`}></div>
+          <span>Start Node</span>
+        </div>
+        <div className={classes.legendItem}>
+          <div className={`${classes.legendColor} ${classes.legendEnd}`}></div>
+          <span>Target Node</span>
+        </div>
+        <div className={classes.legendItem}>
+          <div className={`${classes.legendColor} ${classes.legendWall}`}></div>
+          <span>Wall</span>
+        </div>
+        <div className={classes.legendItem}>
+          <div className={`${classes.legendColor} ${classes.legendPath}`}></div>
+          <span>Path Found</span>
+        </div>
+      </div>
+
       <div className={classes.grid}>
         {grid.map((row, rowIdx) => {
           return (
@@ -182,24 +215,26 @@ const DepthFirstSearch = () => {
           );
         })}
       </div>
-      <div ref={arraybarRef} className={classes.answer}></div>
+
+      <div ref={answerRef} className={classes.answer}></div>
+
       <div className={classes.button}>
         <Button
-          disabled={!button}
+          disabled={isAnimating}
           onClick={() => {
             refileGrid();
             getInitialGrid();
           }}
         >
-          Generate grid
+          Reset Grid
         </Button>
         <Button
-          disabled={button}
+          disabled={isAnimating}
           onClick={() => {
             visualizeDfs();
           }}
         >
-          DFS
+          Start DFS
         </Button>
       </div>
     </div>

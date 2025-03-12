@@ -2,18 +2,100 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  margin: 0.5rem;
 }
 
 .row_each_Element {
-  background-color: black;
+  background: linear-gradient(145deg, #2a2a3a, #1a1a2e);
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.row_each_Element:hover {
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.1),
+    inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05);
 }
 
 .visited {
-  background-color: white;
-  color: black;
+  background: linear-gradient(145deg, #00b4d8, #90e0ef);
+  box-shadow: 
+    0 0 15px rgba(0, 180, 216, 0.5),
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+  color: #1a1a2e;
+  animation: pulse 0.5s ease-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.highlighted {
+  background: linear-gradient(145deg, #ffd60a, #ffc300);
+  box-shadow: 
+    0 0 15px rgba(255, 214, 10, 0.5),
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+  color: #1a1a2e;
+  animation: pulse 0.5s ease-out;
+  transform: scale(1.1);
+}
+
+@keyframes highlight {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 214, 10, 0);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 214, 10, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 214, 10, 0);
+  }
+}
+
+.highlighted {
+  animation: highlight 1s ease infinite;
+}
+
+@media screen and (max-width: 800px) {
+  .common {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.9rem;
+    margin: 0.3rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .common {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+  }
 }

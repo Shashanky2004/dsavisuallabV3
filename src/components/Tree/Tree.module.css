@@ -1,5 +1,7 @@
 .Big_container {
   padding: 2rem 3rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 @media screen and (max-width: 500px) {
   .Big_container {
@@ -10,15 +12,19 @@
   display: flex;
   flex-direction: column;
   min-height: 90vh;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 .heading {
-  padding: 0;
-  margin: 0;
-  font-size: 3rem;
+  font-size: 3.5rem;
+  font-weight: bold;
   text-align: center;
-  color: white;
-  padding-top: 1rem;
-  width: -webkit-fill-available;
+  color: transparent;
+  background: linear-gradient(45deg, #00b4d8, #90e0ef);
+  background-clip: text;
+  -webkit-background-clip: text;
+  margin-bottom: 2rem;
+  animation: gradientFlow 3s ease infinite;
 }
 .button {
   display: flex;
@@ -26,18 +32,21 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
-  padding-top: 1rem;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  padding-top: 2rem;
+  margin-bottom: 2rem;
 }
 .Trees {
-  margin: auto;
-  padding-top: 1rem;
+  margin: 2rem auto;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 .row {
   display: flex;
@@ -46,9 +55,68 @@
   width: 100%;
   justify-content: space-around;
   align-items: center;
+  position: relative;
 }
-
+.row::before {
+  content: '';
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  width: 2px;
+  height: 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+}
+.description {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  max-width: 800px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.description h3 {
+  color: #90e0ef;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+.description p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.traversalOrder {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-family: monospace;
+  color: #90e0ef;
+}
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 @media screen and (max-width: 650px) {
+  .Big_container {
+    padding: 1rem;
+  }
+  .heading {
+    font-size: 2.5rem;
+  }
+  .row {
+    gap: 1rem;
+  }
+  .Trees {
+    gap: 2rem;
+    padding: 1rem;
+  }
+  .description {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+}
+@media screen and (max-width: 480px) {
   .heading {
     font-size: 2rem;
   }
@@ -57,5 +125,192 @@
   }
   .Trees {
     gap: 1.5rem;
+  }
+}
+
+.treeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  padding: 2rem;
+  position: relative;
+}
+
+.treeLevel {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+}
+
+.nodeWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nodeWrapper::before,
+.nodeWrapper::after {
+  content: '';
+  position: absolute;
+  top: -1.5rem;
+  width: 50%;
+  height: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.nodeWrapper::before {
+  right: 50%;
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.nodeWrapper::after {
+  left: 50%;
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.treeLevel:first-child .nodeWrapper::before,
+.treeLevel:first-child .nodeWrapper::after {
+  display: none;
+}
+
+.orderNodes {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.orderNode {
+  background: rgba(0, 180, 216, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  margin: 1rem auto;
+  max-width: 800px;
+}
+
+.button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.speedControl {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  color: white;
+}
+
+.speedControl label {
+  font-size: 0.9rem;
+  color: #90e0ef;
+}
+
+.speedControl input[type="range"] {
+  width: 150px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.speedControl input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #00b4d8;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.speedControl input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #90e0ef;
+}
+
+.speedControl span {
+  font-size: 0.9rem;
+  min-width: 60px;
+}
+
+.message {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #90e0ef;
+  text-align: center;
+  margin: 1rem 0;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media screen and (max-width: 650px) {
+  .controls {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .speedControl {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .speedControl input[type="range"] {
+    width: 100%;
   }
 }

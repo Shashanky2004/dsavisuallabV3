@@ -2,8 +2,7 @@ import React from "react";
 import classes from "../Sort.module.css";
 import Button from "../../ui/Button";
 import { getMergeSortAnimations } from "./getMergeSortAnimations";
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
 import { BackButton } from "../../ui/BackButton";
 
 const MergeSort = () => {
@@ -12,16 +11,31 @@ const MergeSort = () => {
   const SECONDARY_COLOR = "#707070";
   const PRIMARY_COLOR = "white";
   const [array, setArray] = useState([40, 70, 50]);
+  const [isAnimating, setIsAnimating] = useState(false);
   const max = 100;
   const min = 5;
-  const arraybarRef = useRef(null);
+
+  // Cleanup function for animations
+  useEffect(() => {
+    return () => {
+      // Clear any ongoing animations when component unmounts
+      const elements = document.getElementsByClassName(classes.arraybar);
+      for (let element of elements) {
+        element.style.backgroundColor = PRIMARY_COLOR;
+      }
+    };
+  }, []);
 
   const mergeSort = () => {
+    if (isAnimating) return; // Prevent multiple sorts at once
+    setIsAnimating(true);
+
     const animations = getMergeSortAnimations(array);
+    const arrayBars = document.getElementsByClassName(classes.arraybar);
+    
+    const animationPromises = [];
+
     for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName(
-        arraybarRef.current.className
-      );
       const isColorChange = i % 3 !== 2;
 
       if (isColorChange) {
@@ -29,24 +43,41 @@ const MergeSort = () => {
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
         const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED);
+        
+        const promise = new Promise(resolve => {
+          setTimeout(() => {
+            barOneStyle.backgroundColor = color;
+            barTwoStyle.backgroundColor = color;
+            resolve();
+          }, i * ANIMATION_SPEED);
+        });
+        animationPromises.push(promise);
       } else {
-        setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          arrayBars[barOneIdx].innerHTML = newHeight;
-          barOneStyle.height = `${newHeight * (window.innerHeight / 125)}px`;
-        }, i * ANIMATION_SPEED);
+        const [barOneIdx, newHeight] = animations[i];
+        const barOneStyle = arrayBars[barOneIdx].style;
+        
+        const promise = new Promise(resolve => {
+          setTimeout(() => {
+            arrayBars[barOneIdx].innerHTML = newHeight;
+            barOneStyle.height = `${newHeight * (window.innerHeight / 125)}px`;
+            resolve();
+          }, i * ANIMATION_SPEED);
+        });
+        animationPromises.push(promise);
       }
     }
+
+    // When all animations are done
+    Promise.all(animationPromises).then(() => {
+      setIsAnimating(false);
+    });
   };
 
   const GenerateNumber = () => {
-    var generateArray = [];
-    for (var i = 0; i < NUMBER_OF_BAR; i++) {
+    if (isAnimating) return; // Prevent generation during animation
+    
+    const generateArray = [];
+    for (let i = 0; i < NUMBER_OF_BAR; i++) {
       generateArray.push(Math.floor(Math.random() * (max - min + 1) + min));
     }
     setArray(generateArray);
@@ -55,12 +86,11 @@ const MergeSort = () => {
   return (
     <div className={classes.container}>
       <BackButton />
-      <div className={classes.heading}>MergeSort</div>
+      <div className={classes.heading}>Merge Sort</div>
       <div className={classes.array}>
         {array.map((value, index) => (
           <div
             className={classes.arraybar}
-            ref={arraybarRef}
             key={index}
             style={{
               backgroundColor: PRIMARY_COLOR,
@@ -75,16 +105,14 @@ const MergeSort = () => {
       </div>
       <div className={classes.button}>
         <Button
-          onClick={() => {
-            GenerateNumber();
-          }}
+          onClick={GenerateNumber}
+          disabled={isAnimating}
         >
           Generate number
         </Button>
         <Button
-          onClick={() => {
-            mergeSort();
-          }}
+          onClick={mergeSort}
+          disabled={isAnimating}
         >
           MergeSort
         </Button>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { preorderTraversal } from "./getPreorderTraversal";
+import { inorderTraversal } from "./getInorderTraversal";
 import styles from "../Tree.module.css";
 
-const PreorderTraversal = () => {
+const InorderTraversal = () => {
   const [array, setArray] = useState([]);
   const [tree, setTree] = useState([]);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -22,6 +22,7 @@ const PreorderTraversal = () => {
     const newTree = arr.map((value) => ({
       value,
       visited: false,
+      highlighted: false
     }));
     setTree(newTree);
   };
@@ -36,15 +37,17 @@ const PreorderTraversal = () => {
     setIsAnimating(true);
     setMessage("Traversing...");
     const animations = [];
-    preorderTraversal(array, animations);
+    inorderTraversal(array, animations);
     
     for (let i = 0; i < animations.length; i++) {
-      const idx = animations[i];
+      const { index, type } = animations[i];
       await new Promise((resolve) => setTimeout(resolve, speed));
+      
       setTree((prevTree) =>
-        prevTree.map((node, index) => ({
+        prevTree.map((node, nodeIndex) => ({
           ...node,
-          visited: index === idx ? true : node.visited,
+          visited: type === 'visit' && index === nodeIndex ? true : node.visited,
+          highlighted: type === 'highlight' && index === nodeIndex ? true : false
         }))
       );
     }
@@ -58,6 +61,7 @@ const PreorderTraversal = () => {
       prevTree.map((node) => ({
         ...node,
         visited: false,
+        highlighted: false
       }))
     );
     setMessage("");
@@ -70,7 +74,13 @@ const PreorderTraversal = () => {
       nodes.push(
         <div key={startIdx + i} className={styles.nodeWrapper}>
           <div
-            className={`common ${node.visited ? "visited" : "row_each_Element"}`}
+            className={`common ${
+              node.visited 
+                ? "visited" 
+                : node.highlighted 
+                ? "highlighted" 
+                : "row_each_Element"
+            }`}
           >
             {node.value}
           </div>
@@ -100,18 +110,18 @@ const PreorderTraversal = () => {
 
   return (
     <div className={styles.Big_container}>
-      <h1 className={styles.heading}>Preorder Traversal</h1>
+      <h1 className={styles.heading}>Inorder Traversal</h1>
       
       <div className={styles.description}>
-        <h3>What is Preorder Traversal?</h3>
+        <h3>What is Inorder Traversal?</h3>
         <p>
-          Preorder traversal is a way to visit all nodes in a binary tree following the order:
+          Inorder traversal is a way to visit all nodes in a binary tree following the order:
           <ol>
-            <li>Visit the root node</li>
             <li>Traverse the left subtree</li>
+            <li>Visit the root node</li>
             <li>Traverse the right subtree</li>
           </ol>
-          This creates a sequence where each parent node appears before its children.
+          This creates a sequence that visits nodes in ascending order for a binary search tree.
         </p>
       </div>
 
@@ -180,4 +190,4 @@ const PreorderTraversal = () => {
   );
 };
 
-export default PreorderTraversal;
+export default InorderTraversal; 

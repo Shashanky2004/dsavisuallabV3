@@ -1,16 +1,31 @@
 .node-Game2048 {
-  outline: 1.5px solid rgb(175, 216, 248);
+  border-radius: 8px;
   text-align: center;
   font-size: 1.75rem;
-  color: #000000;
+  font-weight: bold;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px;
+  user-select: none;
 }
+
+.node-Game2048:not(:empty) {
+  transform: scale(1.02);
+}
+
 @media screen and (max-width: 800px) {
   .node-Game2048 {
-    font-size: 1rem;
+    font-size: 1.2rem;
+    margin: 3px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .node-Game2048 {
-    font-size: 0.75rem;
+    font-size: 1rem;
+    margin: 2px;
   }
 }

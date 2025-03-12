@@ -149,24 +149,31 @@ const Game2048 = () => {
   return (
     <div className={classes.container}>
       <BackButton />
-      <div className={classes.heading}>2048 Game </div>
+      <div className={classes.heading}>2048</div>
+      
+      <div className={classes.instructions}>
+        <h3>How to Play</h3>
+        <p>
+          Join the numbers and get to the 2048 tile! When two tiles with the same number touch, they merge into one!
+        </p>
+        <ul>
+          <li>Use arrow keys to move tiles</li>
+          <li>Swipe on mobile devices</li>
+          <li>Tiles with the same number merge into one</li>
+          <li>Try to reach 2048!</li>
+        </ul>
+      </div>
+
       <div className={classes.grid}>
         {result && (
           <Game2048Result setResult={setResult} result={valueOfResult} />
         )}
+        <div className={classes.score}>Score: {score}</div>
         <div
-          onTouchStart={(event) => {
-            handleTouchStart(event);
-          }}
-          onTouchEnd={(event) => {
-            handleTouchEnd(event);
-          }}
-          onMouseDown={(event) => {
-            handleMouseDown(event);
-          }}
-          onMouseUp={(event) => {
-            handleMouseUp(event);
-          }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         >
           {grid.map((row, rowIdx) => {
             return (
@@ -185,22 +192,18 @@ const Game2048 = () => {
                       col={col}
                       row={row}
                       value={value}
-                    ></Game2048Node>
+                    />
                   );
                 })}
               </div>
             );
           })}
         </div>
-        <div className={classes.score}>Total score : {score}</div>
       </div>
+
       <div className={classes.button}>
-        <Button
-          onClick={() => {
-            getInitialGrid();
-          }}
-        >
-          Generate grid
+        <Button onClick={getInitialGrid}>
+          New Game
         </Button>
       </div>
     </div>

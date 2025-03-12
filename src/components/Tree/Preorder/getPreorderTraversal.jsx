@@ -1,17 +1,30 @@
-var animation = [];
-function preorderTraversal(nodeIndex, tree1D) {
-  if (nodeIndex >= tree1D.length) {
-    return;
-  }
-  animation.push(tree1D[nodeIndex]);
-  const leftChildIndex = 2 * nodeIndex + 1;
-  const rightChildIndex = 2 * nodeIndex + 2;
-  preorderTraversal(leftChildIndex, tree1D);
-  preorderTraversal(rightChildIndex, tree1D);
-}
+export const preorderTraversal = (array, animations) => {
+  if (!array || array.length === 0) return;
+
+  const traverse = (index) => {
+    if (index >= array.length) return;
+    
+    // Visit current node
+    animations.push(index);
+    
+    // Traverse left child (2*i + 1)
+    const leftChild = 2 * index + 1;
+    if (leftChild < array.length) {
+      traverse(leftChild);
+    }
+    
+    // Traverse right child (2*i + 2)
+    const rightChild = 2 * index + 2;
+    if (rightChild < array.length) {
+      traverse(rightChild);
+    }
+  };
+
+  traverse(0);
+};
 
 export const getpreordertraversal = (tree) => {
-  animation = [];
+  var animation = [];
   var tree1D = [].concat(...tree);
   tree1D = [];
   for (var i = 0; i < tree.length; i++) {
@@ -19,6 +32,6 @@ export const getpreordertraversal = (tree) => {
       tree1D.push([i + "", j + ""]);
     }
   }
-  preorderTraversal(0, tree1D);
+  preorderTraversal(tree1D, animation);
   return animation;
 };

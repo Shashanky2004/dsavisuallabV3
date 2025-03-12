@@ -8,6 +8,7 @@ const PreorderTraversal = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [speed, setSpeed] = useState(1000);
   const [message, setMessage] = useState("");
+  const [traversalOrder, setTraversalOrder] = useState([]);
 
   const generateRandomArray = (size = 7) => {
     const newArray = Array.from({ length: size }, () =>
@@ -16,12 +17,14 @@ const PreorderTraversal = () => {
     setArray(newArray);
     generateTree(newArray);
     setMessage("");
+    setTraversalOrder([]);
   };
 
   const generateTree = (arr) => {
     const newTree = arr.map((value) => ({
       value,
       visited: false,
+      highlighted: false
     }));
     setTree(newTree);
   };
@@ -38,15 +41,21 @@ const PreorderTraversal = () => {
     const animations = [];
     preorderTraversal(array, animations);
     
+    const newTraversalOrder = [];
     for (let i = 0; i < animations.length; i++) {
       const idx = animations[i];
       await new Promise((resolve) => setTimeout(resolve, speed));
+      
       setTree((prevTree) =>
         prevTree.map((node, index) => ({
           ...node,
           visited: index === idx ? true : node.visited,
+          highlighted: index === idx ? true : false
         }))
       );
+      
+      newTraversalOrder.push(tree[idx].value);
+      setTraversalOrder(newTraversalOrder);
     }
     
     setIsAnimating(false);
@@ -58,9 +67,11 @@ const PreorderTraversal = () => {
       prevTree.map((node) => ({
         ...node,
         visited: false,
+        highlighted: false
       }))
     );
     setMessage("");
+    setTraversalOrder([]);
   };
 
   const renderTreeLevel = (startIdx, count, level) => {
@@ -70,9 +81,18 @@ const PreorderTraversal = () => {
       nodes.push(
         <div key={startIdx + i} className={styles.nodeWrapper}>
           <div
-            className={`common ${node.visited ? "visited" : "row_each_Element"}`}
+            className={`${styles.node} ${
+              node.visited 
+                ? styles.visited 
+                : node.highlighted 
+                ? styles.highlighted 
+                : ""
+            }`}
           >
-            {node.value}
+            <div className={styles.nodeValue}>{node.value}</div>
+            {level > 0 && (
+              <div className={styles.connector}></div>
+            )}
           </div>
         </div>
       );
@@ -118,21 +138,21 @@ const PreorderTraversal = () => {
       <div className={styles.Trees}>
         <div className={styles.controls}>
           <button
-            className={styles.button}
+            className={`${styles.button} ${styles.generateButton}`}
             onClick={() => generateRandomArray()}
             disabled={isAnimating}
           >
             🌳 Generate Tree
           </button>
           <button
-            className={styles.button}
+            className={`${styles.button} ${styles.visualizeButton}`}
             onClick={handleVisualize}
             disabled={isAnimating || tree.length === 0}
           >
             {isAnimating ? '⏳ Traversing...' : '▶️ Start Traversal'}
           </button>
           <button
-            className={styles.button}
+            className={`${styles.button} ${styles.resetButton}`}
             onClick={handleReset}
             disabled={isAnimating || tree.length === 0}
           >
@@ -153,7 +173,7 @@ const PreorderTraversal = () => {
         </div>
 
         {message && (
-          <div className={styles.message}>
+          <div className={`${styles.message} ${message.includes("complete") ? styles.success : ""}`}>
             {message === "Traversing..." ? "⏳ " : "✅ "}
             {message}
           </div>
@@ -163,18 +183,19 @@ const PreorderTraversal = () => {
           {renderTree()}
         </div>
 
-        <div className={styles.traversalOrder}>
-          <h3>Traversal Order:</h3>
-          <div className={styles.orderNodes}>
-            {tree
-              .filter((node) => node.visited)
-              .map((node, index) => (
+        {traversalOrder.length > 0 && (
+          <div className={styles.traversalOrder}>
+            <h3>Traversal Order:</h3>
+            <div className={styles.orderNodes}>
+              {traversalOrder.map((value, index) => (
                 <span key={index} className={styles.orderNode}>
-                  {node.value}
+                  {value}
+                  {index < traversalOrder.length - 1 && " → "}
                 </span>
               ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
